@@ -1,0 +1,12 @@
+{
+  "name": "App Controle de Lavagem Grand Brasil",
+  "short_name": "Lavagem GB",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eef5ff",
+  "theme_color": "#0b63ce",
+  "description": "Controle de lavagem, boxes, checklist e permissões da Grand Brasil.",
+  "icons": [
+    {"src": "icon.png", "sizes": "any", "type": "image/png", "purpose": "any maskable"}
+  ]
+}

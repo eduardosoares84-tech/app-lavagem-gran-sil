@@ -1,0 +1,2251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Controle de Lavagem Grand Brasil</title>
+  <style>
+    :root {
+      --bg: #eef5ff;
+      --surface: #ffffff;
+      --surface-2: #e6f0ff;
+      --surface-3: #cfe2ff;
+      --text: #12345b;
+      --text-muted: #5d7694;
+      --primary: #0b63ce;
+      --primary-hover: #084f9f;
+      --success: #1479d1;
+      --warning: #2f8de4;
+      --danger: #ef4444;
+      --purple: #6aaef0;
+      --border: #b8d2f0;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #063b75 0%, #0b63ce 65%, #3b8de3 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+    }
+
+    .brand-text h1 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .date-picker {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+    .btn-success:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: #0f172a;
+    }
+
+    .btn-outline {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      background: var(--surface-3);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    /* KPI BAR */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+      padding: 16px 24px 8px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kpi-label {
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 800;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* CONSULTANT / PRISMA LEGEND BAR */
+    .prisma-bar {
+      margin: 8px 24px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .prisma-bar-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+
+    .consultant-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+
+    .consultant-pill:hover {
+      transform: translateY(-1px);
+    }
+
+    .consultant-pill.active {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+    }
+
+    .prisma-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+      box-shadow: 0 0 4px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    /* NAVIGATION TABS */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 8px 24px 0;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .nav-tab {
+      padding: 11px 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-tab:hover {
+      color: var(--text);
+    }
+
+    .nav-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(14, 165, 233, 0.06);
+    }
+
+    /* MAIN CONTENT */
+    main {
+      padding: 18px 24px 40px;
+      flex: 1;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* FILTER TOOLBAR */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      background: var(--surface);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .input-control, .select-control {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .input-control:focus, .select-control:focus {
+      border-color: var(--primary);
+    }
+
+    /* VIEW 1: GRADE DE BOXES (08:00 - 17:30 x 3 BOXES) */
+    .schedule-matrix {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .matrix-header {
+      display: grid;
+      grid-template-columns: 95px repeat(3, 1fr);
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13.5px;
+      position: sticky;
+      top: 79px;
+      z-index: 20;
+      border: 1px solid var(--border);
+    }
+
+    .box-header-col {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.45);
+    }
+
+    .matrix-row {
+      display: grid;
+      grid-template-columns: 95px repeat(3, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .time-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .time-cell span {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .slot-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.15s ease, transform 0.15s ease;
+      min-height: 132px;
+    }
+
+    .slot-card.empty {
+      border-style: dashed;
+      background: rgba(30, 41, 59, 0.45);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .slot-card.empty:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(14, 165, 233, 0.06);
+    }
+
+    .slot-prisma-stripe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 7px;
+    }
+
+    .slot-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      padding-left: 6px;
+    }
+
+    .prisma-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+    }
+
+    .priority-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 99px;
+      text-transform: uppercase;
+    }
+
+    .priority-alta {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .priority-normal {
+      background: rgba(14, 165, 233, 0.15);
+      color: #7dd3fc;
+    }
+
+    .slot-vehicle {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 6px;
+    }
+
+    .vehicle-thumb {
+      width: 88px;
+      height: 52px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .vehicle-thumb svg, .vehicle-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .vehicle-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .plate-tag {
+      display: inline-block;
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border-top: 3px solid #1d4ed8;
+      letter-spacing: 0.06em;
+      font-family: monospace;
+    }
+
+    .service-tag {
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .slot-timestamps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding-left: 6px;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .ts-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .ts-label {
+      color: var(--text-muted);
+      font-size: 9.5px;
+      text-transform: uppercase;
+    }
+    .ts-val {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .slot-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-left: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* STATUS PILLS */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .st-aguardando {
+      background: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+    }
+    .st-liberado {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    .st-lavando {
+      background: rgba(14, 165, 233, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(14, 165, 233, 0.4);
+    }
+    .st-concluido {
+      background: rgba(139, 92, 246, 0.2);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+    .st-aprovado {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+    }
+
+    /* VIEW 2: TABELA COMPLETA (AS 9 COLUNAS EXATAS) */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1150px;
+    }
+
+    thead th {
+      background: var(--surface-2);
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 13px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* VIEW 3: PAINEL OPERACIONAL DA LAVAGEM (TV / TABLET DOS BOXES) */
+    .boxes-live-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .box-column {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .box-col-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .box-col-header h3 {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* MODALS */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .preview-vehicle-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--surface-2);
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .check-row:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .check-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--success);
+    }
+
+    .modal-footer {
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    @media (max-width: 960px) {
+      .matrix-header, .matrix-row {
+        grid-template-columns: 1fr;
+      }
+      .boxes-live-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      header .header-controls, .nav-tabs, .toolbar, .slot-actions {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+        color: #000;
+      }
+    }
+  
+/* Identidade Grand Brasil, timeline e rolagem móvel */
+.brand-logo.grand-brasil-logo{width:190px;height:64px;padding:6px 12px;border-radius:10px;background:#fff;object-fit:contain;box-shadow:0 4px 14px rgba(0,0,0,.28)}
+header{border-bottom:3px solid #ffffff}.matrix-row{position:relative}
+.matrix-row.current-time-row::after{content:"";position:absolute;left:4px;right:4px;top:var(--timeline-pos,50%);height:3px;background:#ff3b30;box-shadow:0 0 8px rgba(255,59,48,.85);z-index:15;pointer-events:none}
+.matrix-row.current-time-row::before{content:"AGORA " attr(data-now);position:absolute;left:4px;top:calc(var(--timeline-pos,50%) - 12px);z-index:16;padding:3px 7px;border-radius:6px;background:#ff3b30;color:#fff;font-size:10px;font-weight:900;white-space:nowrap;pointer-events:none}
+.matrix-row.current-time-row .time-cell{border-color:#ff3b30;background:linear-gradient(135deg,#39211f,var(--surface))}
+@media(max-width:700px){
+ .brand-logo.grand-brasil-logo{width:145px;height:52px}
+ .schedule-matrix{display:block;overflow-x:auto;overflow-y:visible;width:100%;max-width:100%;padding-bottom:12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#0b63ce #dcecff;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
+ .schedule-matrix::-webkit-scrollbar{height:10px}.schedule-matrix::-webkit-scrollbar-track{background:#dcecff;border-radius:8px}.schedule-matrix::-webkit-scrollbar-thumb{background:#0b63ce;border-radius:8px}
+ .schedule-matrix .matrix-header,.schedule-matrix .matrix-row{min-width:920px;width:920px;margin-bottom:10px}
+ .matrix-row.current-time-row::before{font-size:9px;padding:2px 4px}
+}
+
+/* Tema azul e branco */
+body{background:linear-gradient(180deg,#eef5ff 0%,#f8fbff 100%);color:#12345b}
+header{color:#fff;box-shadow:0 5px 18px rgba(6,59,117,.22)}
+.brand-text p{color:#e7f2ff}.brand-logo.grand-brasil-logo{border:2px solid rgba(255,255,255,.9)}
+.kpi-card,.toolbar,.schedule-matrix .matrix-header,.time-cell,.slot-card,.box-column,.modal-content,.table-container{background:#fff;color:#12345b;border-color:#b8d2f0;box-shadow:0 6px 18px rgba(11,99,206,.09)}
+.matrix-header,.box-col-header{background:#dcecff;color:#073b72}
+.box-header-col{background:#cfe2ff;color:#073b72}
+.input-control,.select-control,.date-picker,input,select,textarea{background:#fff!important;color:#12345b!important;border-color:#9fc3e9!important}
+.input-control:focus,.select-control:focus,.date-picker:focus,input:focus,select:focus,textarea:focus{border-color:#0b63ce!important;box-shadow:0 0 0 3px rgba(11,99,206,.14)!important}
+.btn-primary{background:#0b63ce!important;border-color:#0b63ce!important;color:#fff!important}.btn-primary:hover{background:#084f9f!important}
+.btn-outline{background:#fff!important;border-color:#0b63ce!important;color:#0b63ce!important}.btn-outline:hover{background:#e6f0ff!important}
+.nav-tabs{background:#fff;border-color:#b8d2f0}.nav-tab{color:#5d7694}.nav-tab.active{color:#0b63ce;border-color:#0b63ce}
+.slot-card.empty{background:#f3f8ff;border-color:#8ab9e8;color:#5d7694}.slot-card.empty:hover{background:#e6f0ff;border-color:#0b63ce}
+.prisma-bar,.consultant-legend-bar{background:#fff!important;border-color:#b8d2f0!important}
+table thead th{background:#dcecff;color:#073b72}table tbody tr{background:#fff}table tbody tr:hover{background:#f1f7ff}table td,table th{border-color:#cfe2ff!important}
+.modal-overlay{background:rgba(5,38,75,.55)}
+.status-pill{border:1px solid rgba(11,99,206,.24)}
+@media(max-width:700px){.schedule-matrix::-webkit-scrollbar-track{background:#dcecff}.schedule-matrix::-webkit-scrollbar-thumb{background:#0b63ce}}
+
+/* Controle de usuários e permissões */
+.access-user-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:9px;background:rgba(255,255,255,.16);color:#fff;font-size:12px;font-weight:700;border:1px solid rgba(255,255,255,.35)}
+.access-grid{display:grid;grid-template-columns:1.2fr repeat(6,minmax(62px,1fr)) 44px;gap:6px;align-items:center;min-width:760px}
+.access-grid>div{padding:8px 6px;border-bottom:1px solid #cfe2ff;font-size:12px}.access-head{font-weight:800;color:#073b72;background:#e6f0ff;border-radius:6px}
+.access-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.access-check{width:18px;height:18px;accent-color:#0b63ce}
+.access-note{padding:10px;border-radius:8px;background:#fff4d6;color:#694c00;font-size:12px;margin-bottom:12px;border:1px solid #f2d37d}
+.permission-lock{opacity:.48;filter:grayscale(.25)}
+@media(max-width:700px){.access-user-badge{width:100%;justify-content:center}.access-grid{min-width:760px}}
+
+/* Versão otimizada para smartphone */
+.mobile-bottom-nav,.mobile-fab,.mobile-scroll-hint{display:none}
+@media(max-width:700px){
+ html{scroll-behavior:smooth} body{padding-bottom:86px;overflow-x:hidden}
+ header{position:relative;top:auto;padding:10px 12px;gap:10px}
+ .brand{width:100%;gap:9px}.brand-logo.grand-brasil-logo{width:112px;height:44px;padding:4px 7px}.brand-text h1{font-size:15px;line-height:1.15}.brand-text p{font-size:10px;line-height:1.3}
+ .header-controls{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:7px}.header-controls>*{width:100%;min-width:0}.header-controls .date-picker{grid-column:1/-1;min-height:46px}.header-controls .btn{min-height:44px;padding:8px;font-size:11px}.access-user-badge{grid-column:1/-1;min-height:38px}
+ .kpi-grid{display:flex;overflow-x:auto;gap:9px;padding:10px 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}.kpi-card{min-width:155px;scroll-snap-align:start;padding:12px}.kpi-value{font-size:22px}
+ .prisma-bar{margin:0 12px 10px;padding:9px;overflow-x:auto;flex-wrap:nowrap}.consultant-pill{flex:0 0 auto}
+ .nav-tabs{display:none!important}
+ main{padding:10px 10px 20px}.toolbar{padding:10px;gap:8px}.toolbar-group{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:7px}.toolbar-group:first-child{grid-template-columns:1fr}.toolbar .input-control,.toolbar .select-control{width:100%;min-height:44px;font-size:14px}.toolbar .btn{min-height:42px}
+ .mobile-scroll-hint{display:flex;align-items:center;justify-content:center;gap:7px;margin:0 0 7px;padding:7px 10px;border-radius:8px;background:#e6f0ff;color:#0b63ce;font-size:11px;font-weight:800}
+ .schedule-matrix{border-radius:10px}.schedule-matrix .matrix-header,.schedule-matrix .matrix-row{min-width:860px;width:860px}.matrix-header,.matrix-row{grid-template-columns:76px repeat(3,248px);gap:8px}.time-cell{padding:7px;font-size:13px}.slot-card{padding:9px}.slot-actions{gap:6px}.slot-actions .btn{min-height:38px}
+ .table-container{overflow-x:auto;-webkit-overflow-scrolling:touch}.table-container table{min-width:1180px}.table-container th{position:sticky;top:0;z-index:3}.table-container td,.table-container th{font-size:11px;padding:8px}
+ .boxes-live-grid{grid-template-columns:1fr!important}.box-column{padding:10px}.box-col-header{position:sticky;top:0;z-index:4}
+ .modal-backdrop{padding:0;align-items:flex-end}.modal-card{width:100%;max-width:100%!important;max-height:92vh;border-radius:18px 18px 0 0}.modal-header{position:sticky;top:0;z-index:3;background:#fff}.modal-footer{position:sticky;bottom:0;z-index:3;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:7px}.modal-footer .btn{min-height:46px}.modal-body{padding:14px}.form-grid{grid-template-columns:1fr!important}.form-group input,.form-group select,.form-group textarea{min-height:46px;font-size:16px}
+ .btn{touch-action:manipulation}.btn-sm{min-height:38px;padding:8px 10px}
+ .mobile-bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:900;background:#fff;border-top:1px solid #b8d2f0;box-shadow:0 -6px 20px rgba(6,59,117,.16);padding:6px 5px calc(6px + env(safe-area-inset-bottom))}
+ .mobile-bottom-nav button{border:0;background:transparent;color:#5d7694;min-height:52px;border-radius:10px;font-size:10px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.mobile-bottom-nav button span{font-size:20px}.mobile-bottom-nav button.active{background:#e6f0ff;color:#0b63ce}
+ .mobile-fab{display:flex;position:fixed;right:16px;bottom:82px;z-index:850;width:56px;height:56px;border:0;border-radius:50%;background:#0b63ce;color:#fff;font-size:28px;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(11,99,206,.38)}
+ .access-grid{min-width:730px}
+}
+</style>
+  <meta name="theme-color" content="#0b63ce" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Lavagem GB" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon.png" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <img class="brand-logo grand-brasil-logo" src="data:image/png;base64,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nu/5nu/7vu976UtfumvXLpAVRfHrv/7rj370o7/u677uW77lWxS+6Zu+6du+7dtIPuYxj7ngggse97jHqZce+chH6vhzP/dz733ve7Msm5ub4+YvfOELu3fv5gyI53lOIa/wx8zMDE+8+tWvftjDHnbe6u+3fuu31OzcuVO0dVd/htZRpY4895rXvOZJT3oSA/72b//WIzE6FeSNwOzs7MLCAl6JCYP+9E//tLne//73/6M/+iMyxjW1RzziEY9//OOf9axngWLNRObSSy/9wAc+0Ol09AIdbYcPD+oyZXXK/Um2ymFRpCNHVrLUK+usO9PLOqnIqyIvq9Ey7tVlf8eO3YM+FpaVd9K8218+8qcvf/GzvuOpj37sI578pCc+5pGPffx55z/jac98+tOf+tSnPuXbvv3pj3v8477927/9MY95zIMf/GDTfN7znvcrv/IrDICkORI6//zzn/KUpwBfAQhgl8477zy5SpPiEfN98pOf/Ju/+Zv/8A//cOaZZ8IZhmeffbYYgAxtkhWzLEv4i43f/d3ffcADHvBd3/Vder3iFa/QyulNL2UIYJrps0GZW3/2Z38WdEZhCfS+9mu/9rzzzjO6oVnOku/+7u/+gR/4gec+97lvfvObDW2IX/3VXyX/lV/5labw+c9/ntqf//mff8hDHuKRMP18R7nEKssBga1N+UYPjxW3u93t5ufnBTki/dAP0NKrKgAAEABJREFU/RByvu1tb3vLCX5vfetbhb6gf9Ob3vT7v//7AvSP//iPm/XvH//xH7X+/d///d/93d/p/YbV3+WXX+5Reu1rXyt/97vfLaClX/7lX/6Gb/iGf/7nf+aY00477ayzzsJGYSEger0eN3hUafpqXvCCF5B8z3ve8/rXv54LP/rRj+Kh4PjIRz5CgAYxwWEKeKjVWDgjAn7t135NAH32s5/FHLuB2CVGWAiar0VBdzpZStUnP/lJwiLsda973bve9S5zueiii8x0zURG6IskwQousWUWO3b0vAfmGWbKijKN8qzYt8/honLNM9ubmel0u6kosqy/spIVFqCqU/RcwHbmFvJOzwa5tDJ43/v/+U1vesull75zjOelb33DG9/w2te/liWvvvDi17zmDa977esN9853vhOp2PAHf/AHP/ETP2GlW15eNv0LL7zwb/7mb7jgsssus5zxgll4lOslv+SS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" alt="Logo Grand Brasil">
+      <div class="brand-text">
+        <h1>App Controle de Lavagem Grand Brasil</h1>
+        <p>Programação da Oficina • 3 Boxes (30 em 30 min: 08:00 às 17:30) • Checklist Líder RW</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <input type="date" id="scheduleDate" class="date-picker" />
+      <button class="btn btn-primary" onclick="openModalNovo()">+ Agendar Veículo (Oficina)</button>
+      <button class="btn btn-outline" onclick="openPrismaModal()">🎨 Cores dos Prismas / Consultores</button>
+      <button class="btn btn-outline" onclick="exportCSV()">📥 Exportar Planilha (CSV)</button>
+      <span class="access-user-badge" id="currentUserBadge">🔒 Não autenticado</span>
+      <button class="btn btn-outline" onclick="openAccessModal()">🔐 Usuários e Permissões</button>
+    </div>
+  </header>
+
+  <!-- KPI SUMMARY -->
+  <section class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-label">Capacidade Diária (3 Boxes)</span>
+      <div class="kpi-value"><span id="kpiTotal">0</span> <span class="kpi-sub">/ 60 slots (3 a cada 30m)</span></div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Liberados p/ Lavagem</span>
+      <div class="kpi-value" style="color: var(--warning);"><span id="kpiLiberados">0</span> <span class="kpi-sub">aguardando box</span></div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Em Lavagem Agora</span>
+      <div class="kpi-value" style="color: var(--primary);"><span id="kpiLavando">0</span> <span class="kpi-sub">nos Boxes 1, 2 e 3</span></div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Lavagem Liberada (Prontos)</span>
+      <div class="kpi-value" style="color: var(--purple);"><span id="kpiConcluidos">0</span> <span class="kpi-sub">aguardando OK RW</span></div>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Checklist OK (Líder RW)</span>
+      <div class="kpi-value" style="color: var(--success);"><span id="kpiAprovados">0</span> <span class="kpi-sub">100% vistoriados</span></div>
+    </div>
+  </section>
+
+  <!-- CONSULTORES & PRISMA COLOR BAR -->
+  <div class="prisma-bar" id="consultantLegendBar">
+    <!-- Preenchido via JS -->
+  </div>
+
+  <!-- TABS -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" data-view="matrix" onclick="switchTab('matrix', this)">🗓️ Grade de Horários (Box 1, Box 2, Box 3)</button>
+    <button class="nav-tab" data-view="table" onclick="switchTab('table', this)">📋 Planilha Completa de Controle (9 Colunas)</button>
+    <button class="nav-tab" data-view="live" onclick="switchTab('live', this)">🚿 Painel Operacional da Lavagem & Checklist RW</button>
+  </nav>
+
+  <main>
+    <!-- TOOLBAR DE FILTROS -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <input type="text" id="searchInput" class="input-control" placeholder="Buscar por placa, prisma ou modelo..." oninput="renderAll()" />
+        <select id="filterConsultant" class="select-control" onchange="renderAll()">
+          <option value="">Todos os Consultores / Prismas</option>
+        </select>
+        <select id="filterBox" class="select-control" onchange="renderAll()">
+          <option value="">Todos os Boxes (1, 2 e 3)</option>
+          <option value="Box 1">Box 1</option>
+          <option value="Box 2">Box 2</option>
+          <option value="Box 3">Box 3</option>
+        </select>
+        <select id="filterStatus" class="select-control" onchange="renderAll()">
+          <option value="">Todos os Status</option>
+          <option value="Programado">Programado (Oficina)</option>
+          <option value="Liberado Lavagem">Liberado p/ Lavagem</option>
+          <option value="Em Lavagem">Em Lavagem</option>
+          <option value="Lavagem Liberada">Lavagem Concluída (Aguard. OK)</option>
+          <option value="Checklist OK">Checklist OK (Líder RW)</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <button class="btn btn-outline btn-sm" onclick="clearFilters()">Limpar Filtros</button>
+        <button class="btn btn-outline btn-sm" onclick="resetDemoData()">🔄 Restaurar Exemplo</button>
+      </div>
+    </div>
+
+    <!-- VIEW 1: GRADE 08:00 ÀS 17:30 x 3 BOXES -->
+    <section id="view-matrix" class="view-section active"><div class="mobile-scroll-hint">↔️ Deslize para visualizar os 3 boxes</div>
+      <div class="schedule-matrix">
+        <div class="matrix-header">
+          <div>Horário</div>
+          <div class="box-header-col"><span>🚿 Box 1</span><span style="font-size:11px;color:var(--text-muted)">30 min/veículo</span></div>
+          <div class="box-header-col"><span>🚿 Box 2</span><span style="font-size:11px;color:var(--text-muted)">30 min/veículo</span></div>
+          <div class="box-header-col"><span>🚿 Box 3</span><span style="font-size:11px;color:var(--text-muted)">30 min/veículo</span></div>
+        </div>
+        <div id="matrixBody" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: TABELA COM AS 9 COLUNAS EXATAS -->
+    <section id="view-table" class="view-section"><div class="mobile-scroll-hint">↔️ Deslize para visualizar todas as colunas</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>1. Horário / Box</th>
+              <th>2. Prisma / Consultor</th>
+              <th>3. Modelo (c/ Imagem)</th>
+              <th>4. Placa</th>
+              <th>5. Tipo de Serviço</th>
+              <th>6. Horário Liberado Lavagem</th>
+              <th>7. Horário Início Lavagem</th>
+              <th>8. Horário Lavagem Liberada</th>
+              <th>9. Check List de OK da Lavagem (Líder RW)</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- VIEW 3: PAINEL OPERACIONAL POR BOX -->
+    <section id="view-live" class="view-section">
+      <div class="boxes-live-grid" id="liveBoxesContainer"></div>
+    </section>
+  </main>
+
+  <!-- MODAL: AGENDAR / EDITAR VEÍCULO (PROGRAMAÇÃO DA OFICINA) -->
+
+  <button class="mobile-fab" id="mobileFab" onclick="openModalNovo()" aria-label="Agendar veículo">+</button>
+  <nav class="mobile-bottom-nav" aria-label="Navegação principal para celular">
+    <button class="active" data-mobile-view="matrix" onclick="mobileSwitch('matrix',this)"><span>🗓️</span>Grade</button>
+    <button data-mobile-view="table" onclick="mobileSwitch('table',this)"><span>📋</span>Planilha</button>
+    <button data-mobile-view="live" onclick="mobileSwitch('live',this)"><span>🚿</span>Painel</button>
+    <button onclick="openAccessModal()"><span>🔐</span>Acesso</button>
+  </nav>
+
+  <div class="modal-backdrop" id="bookingModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Programar Veículo para Lavagem</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeBookingModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" />
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Box de Trabalho *</label>
+            <select id="fBox" class="select-control">
+              <option value="Box 1">Box 1</option>
+              <option value="Box 2">Box 2</option>
+              <option value="Box 3">Box 3</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Horário Programado (a cada 30 min) *</label>
+            <select id="fHorario" class="select-control"></select>
+          </div>
+
+          <div class="form-group">
+            <label>Consultor (Define a Cor do Prisma) *</label>
+            <select id="fConsultor" class="select-control" onchange="updateModalPreview()"></select>
+          </div>
+          <div class="form-group">
+            <label>Número / Código do Prisma *</label>
+            <input type="text" id="fPrismaNum" class="input-control" placeholder="Ex: Prisma 14" oninput="updateModalPreview()" />
+          </div>
+
+          <div class="form-group">
+            <label>Modelo do Veículo *</label>
+            <select id="fModelo" class="select-control" onchange="updateModalPreview()"></select>
+          </div>
+          <div class="form-group">
+            <label>Placa do Veículo *</label>
+            <input type="text" id="fPlaca" class="input-control" placeholder="Ex: ABC1D23" style="text-transform:uppercase" />
+          </div>
+
+          <div class="form-group">
+            <label>Tipo de Serviço (1 a 10) *</label>
+            <select id="fServico" class="select-control"></select>
+          </div>
+          <div class="form-group">
+            <label>Prioridade na Fila</label>
+            <select id="fPrioridade" class="select-control">
+              <option value="Normal">Normal (Horário Marcado)</option>
+              <option value="Alta">🔥 Alta / Cliente Aguardando</option>
+            </select>
+          </div>
+
+          <!-- PREVIEW VISUAL DO PRISMA E IMAGEM DO MODELO -->
+          <div class="form-group full">
+            <label>Identificação Visual Gerada (Cor do Prisma + Imagem do Modelo)</label>
+            <div class="preview-vehicle-box">
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div class="vehicle-thumb" id="modalVehicleSvg" style="width:110px;height:64px;"></div>
+                <div>
+                  <div id="modalPrismaBadge" class="prisma-badge" style="margin-bottom:6px;">PRISMA</div>
+                  <div id="modalModelTitle" style="font-weight:700;font-size:15px;">HB20</div>
+                  <div style="font-size:12px;color:var(--text-muted);">Ilustração automática p/ fácil identificação no Box</div>
+                </div>
+              </div>
+              <div>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;">
+                  📷 Foto Real (Opcional)
+                  <input type="file" id="fCustomImg" accept="image/*" style="display:none" onchange="handleCustomImage(event)" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Horário Liberado Lavagem (Oficina)</label>
+            <div style="display:flex;gap:6px;">
+              <input type="time" id="fHoraLiberado" class="input-control" style="flex:1" />
+              <button type="button" class="btn btn-outline btn-sm" onclick="setNow('fHoraLiberado')">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Horário Início Lavagem (Box)</label>
+            <div style="display:flex;gap:6px;">
+              <input type="time" id="fHoraInicio" class="input-control" style="flex:1" />
+              <button type="button" class="btn btn-outline btn-sm" onclick="setNow('fHoraInicio')">Agora</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Horário Lavagem Liberada (Fim)</label>
+            <div style="display:flex;gap:6px;">
+              <input type="time" id="fHoraFim" class="input-control" style="flex:1" />
+              <button type="button" class="btn btn-outline btn-sm" onclick="setNow('fHoraFim')">Agora</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Observações da Oficina / Lavagem</label>
+            <input type="text" id="fObs" class="input-control" placeholder="Ex: Entregar até 11h, atenção rodas..." />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="btnDeleteBooking" style="margin-right:auto;color:#fca5a5;display:none;" onclick="deleteCurrentBooking()">🗑️ Excluir</button>
+        <button class="btn btn-outline" onclick="closeBookingModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveBooking()">💾 Salvar Programação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CHECKLIST DE OK DA LAVAGEM (LÍDER EMPRESA RW) -->
+  <div class="modal-backdrop" id="checklistModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>✅ Check List de OK da Lavagem — Líder Empresa RW</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeChecklistModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="chkBookingId" />
+        <div id="chkVehicleSummary" class="preview-vehicle-box"></div>
+
+        <div class="form-group">
+          <label>Itens de Inspeção de Qualidade (Obrigatório para Liberação)</label>
+          <div class="checklist-items" id="chkItemsList">
+            <!-- Gerado dinamicamente conforme o serviço -->
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Responsável pelo OK (Líder Empresa RW) *</label>
+            <input type="text" id="chkLiderNome" class="input-control" value="Líder Empresa RW" />
+          </div>
+          <div class="form-group">
+            <label>Horário Lavagem Liberada (Conclusão)</label>
+            <input type="time" id="chkHoraFinal" class="input-control" />
+          </div>
+          <div class="form-group full">
+            <label>Parecer / Observação do Líder RW</label>
+            <input type="text" id="chkObs" class="input-control" placeholder="Ex: Veículo inspecionado e liberado sem ressalvas." />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeChecklistModal()">Cancelar</button>
+        <button class="btn btn-success" onclick="confirmChecklistRW()">✔️ Aprovar e Registrar OK da Lavagem</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIGURAR CORES DOS PRISMAS / CONSULTORES -->
+  <div class="modal-backdrop" id="prismaModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🎨 Cores dos Consultores & Prismas</h3>
+        <button class="btn btn-outline btn-sm" onclick="closePrismaModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--text-muted);">
+          Cada consultor possui uma cor igual à do seu Prisma físico na oficina para facilitar a identificação visual rápida pela equipe da lavagem:
+        </p>
+        <div id="prismaColorList" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closePrismaModal()">Concluir</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal-backdrop" id="accessModal">
+    <div class="modal-card" style="max-width:980px;">
+      <div class="modal-header"><h3>🔐 Usuários e Permissões</h3><button class="btn btn-outline btn-sm" onclick="closeAccessModal()">✕</button></div>
+      <div class="modal-body">
+        <div id="loginPanel">
+          <div class="access-note">Esta proteção funciona neste navegador e neste arquivo. Para segurança corporativa entre vários computadores, será necessário publicar o aplicativo com banco de dados e autenticação em servidor.</div>
+          <div class="form-grid">
+            <div class="form-group"><label>Usuário</label><input id="loginUser" class="input-control" autocomplete="username" placeholder="Digite o usuário"></div>
+            <div class="form-group"><label>Senha/PIN</label><input id="loginPin" class="input-control" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Digite o PIN"></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn btn-primary" onclick="loginAccess()">Entrar</button><button class="btn btn-outline" onclick="logoutAccess()">Sair do usuário atual</button></div>
+          <p style="font-size:12px;color:#5d7694;margin-top:10px">Primeiro acesso do administrador: usuário <strong>admin</strong> e PIN <strong>1234</strong>. Altere o PIN após entrar.</p>
+        </div>
+        <div id="adminPanel" style="display:none;margin-top:18px">
+          <h4 style="margin-bottom:10px">Gerenciar acessos por tela</h4>
+          <div class="access-scroll"><div id="accessUsersGrid" class="access-grid"></div></div>
+          <div class="form-grid" style="margin-top:16px">
+            <div class="form-group"><label>Novo usuário</label><input id="newAccessUser" class="input-control" placeholder="Ex.: recepcao"></div>
+            <div class="form-group"><label>PIN inicial</label><input id="newAccessPin" class="input-control" type="password" inputmode="numeric" placeholder="Mínimo 4 dígitos"></div>
+          </div>
+          <button class="btn btn-primary" style="margin-top:10px" onclick="addAccessUser()">+ Adicionar usuário</button>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-outline" onclick="closeAccessModal()">Fechar</button><button class="btn btn-primary" id="saveAccessBtn" style="display:none" onclick="saveAccessUsers()">Salvar permissões</button></div>
+    </div>
+  </div>
+
+<script>
+    // 1. DADOS FIXOS SOLICITADOS PELO USUÁRIO
+    const HORARIOS = [
+      "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
+      "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
+      "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
+      "17:00", "17:30"
+    ];
+
+    const BOXES = ["Box 1", "Box 2", "Box 3"];
+
+    const DEFAULT_CONSULTORES = [
+      { nome: "Clayton Pereira", cor: "#ef4444", corNome: "Vermelho" },
+      { nome: "Joao Cardozo", cor: "#3b82f6", corNome: "Azul" },
+      { nome: "Renata Arcoverde", cor: "#10b981", corNome: "Verde" },
+      { nome: "Renata Pereira", cor: "#f59e0b", corNome: "Amarelo" },
+      { nome: "Andrio Silva", cor: "#f97316", corNome: "Laranja" },
+      { nome: "Junior Jesus Silva", cor: "#8b5cf6", corNome: "Roxo" },
+      { nome: "VEÍCULO 0KM", cor: "#06b6d4", corNome: "Ciano / Branco" },
+      { nome: "RW | ESTÉTICA", cor: "#ec4899", corNome: "Rosa / Magenta" }
+    ];
+
+    const MODELOS = [
+      "Accent Hatch", "Accent Sedan", "Atos Prime", "Azera", "Coupé/Tiburon",
+      "Creta", "Elantra", "Elantra Wagon", "Equus", "Excel Hatch",
+      "Excel Sedan", "Galloper", "Genesis", "H1", "H1 Starex",
+      "H100", "HB20", "HB20S", "HB20X", "HD78",
+      "HD80", "HR", "i20", "i30", "i30 CW",
+      "Ioniq", "Ioniq 5", "ix35", "Kona", "Kona EV",
+      "Kona Hybrid/HEV", "Matrix", "Palisade", "Porter", "Santa Fe",
+      "Scoupe", "Sonata", "Starex", "Terracan", "Trajet",
+      "Tucson", "Veloster", "Veracruz"
+    ];
+
+    const SERVICOS = [
+      "1. Cristalização de pintura",
+      "2. Vitrificação de pintura",
+      "3. Ceramic Coat",
+      "4. Higienização interna",
+      "5. Impermeabilização de tecidos",
+      "6. Hidratação de couro",
+      "7. Proteção de couro",
+      "8. Limpeza técnica do motor",
+      "9. Coat de vidros",
+      "10. Lavagem simples"
+    ];
+
+    // Mapeia cada modelo para uma categoria de carroceria para gerar a ilustração SVG correspondente
+    function getModelCategory(modelo) {
+      const m = modelo.toLowerCase();
+      if (m.includes("hd78") || m.includes("hd80") || m === "hr" || m.includes("porter")) return "truck";
+      if (m.includes("h1") || m.includes("starex") || m.includes("trajet") || m.includes("matrix")) return "van";
+      if (m.includes("creta") || m.includes("tucson") || m.includes("ix35") || m.includes("santa fe") || m.includes("palisade") || m.includes("veracruz") || m.includes("kona") || m.includes("galloper") || m.includes("terracan") || m.includes("ioniq 5") || m.includes("hb20x")) return "suv";
+      if (m.includes("coupé") || m.includes("scoupe") || m.includes("veloster")) return "coupe";
+      if (m.includes("wagon") || m.includes("cw")) return "wagon";
+      if (m.includes("sedan") || m.includes("hb20s") || m.includes("azera") || m.includes("elantra") || m.includes("equus") || m.includes("genesis") || m.includes("sonata") || m === "ioniq") return "sedan";
+      return "hatch";
+    }
+
+    // Gera ilustração vetorial nítida do modelo com badge e silhueta automotiva correspondente
+    function getVehicleIllustration(modelo, accentColor = "#38bdf8", customImg = null) {
+      if (customImg) {
+        return `<img src="${customImg}" alt="${modelo}" />`;
+      }
+      const cat = getModelCategory(modelo);
+      let bodyPath = "";
+      let windowPath = "";
+      let labelCat = "";
+
+      if (cat === "suv") {
+        labelCat = "SUV";
+        bodyPath = "M12 42 L16 27 L28 16 L68 16 L78 27 L88 30 L88 42 Z";
+        windowPath = "M30 19 L48 19 L48 27 L20 27 Z M51 19 L66 19 L74 27 L51 27 Z";
+      } else if (cat === "sedan") {
+        labelCat = "SEDAN";
+        bodyPath = "M10 42 L14 30 L28 19 L62 19 L74 29 L90 31 L90 42 Z";
+        windowPath = "M30 21 L46 21 L46 29 L18 29 Z M49 21 L60 21 L70 29 L49 29 Z";
+      } else if (cat === "truck") {
+        labelCat = "VUC/HR";
+        bodyPath = "M12 42 L12 20 L54 20 L54 34 L60 18 L78 18 L86 29 L86 42 Z";
+        windowPath = "M63 21 L76 21 L82 29 L63 29 Z";
+      } else if (cat === "van") {
+        labelCat = "VAN";
+        bodyPath = "M12 42 L14 17 L72 17 L86 28 L88 42 Z";
+        windowPath = "M18 20 L38 20 L38 28 L17 28 Z M41 20 L60 20 L60 28 L41 28 Z M63 20 L71 20 L82 28 L63 28 Z";
+      } else if (cat === "coupe") {
+        labelCat = "SPORT";
+        bodyPath = "M10 42 L16 30 L34 19 L60 19 L76 28 L90 31 L90 42 Z";
+        windowPath = "M35 21 L58 21 L70 28 L24 28 Z";
+      } else {
+        labelCat = "HATCH";
+        bodyPath = "M14 42 L18 24 L30 18 L64 18 L76 28 L86 31 L86 42 Z";
+        windowPath = "M31 20 L48 20 L48 28 L22 28 Z M51 20 L63 20 L72 28 L51 28 Z";
+      }
+
+      return `
+        <svg viewBox="0 0 100 58" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="carGrad_${cat}" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="${accentColor}" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#1e293b" stop-opacity="0.95"/>
+            </linearGradient>
+          </defs>
+          <rect x="3" y="3" width="32" height="10" rx="3" fill="rgba(255,255,255,0.1)" />
+          <text x="19" y="10" fill="#cbd5e1" font-size="6.2" font-weight="bold" text-anchor="middle">${labelCat}</text>
+          <ellipse cx="50" cy="46" rx="38" ry="3.5" fill="rgba(0,0,0,0.45)" />
+          <path d="${bodyPath}" fill="url(#carGrad_${cat})" stroke="${accentColor}" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="${windowPath}" fill="#0f172a" opacity="0.85"/>
+          <circle cx="28" cy="42" r="7" fill="#0f172a" stroke="#94a3b8" stroke-width="2"/>
+          <circle cx="28" cy="42" r="2.8" fill="#cbd5e1"/>
+          <circle cx="72" cy="42" r="7" fill="#0f172a" stroke="#94a3b8" stroke-width="2"/>
+          <circle cx="72" cy="42" r="2.8" fill="#cbd5e1"/>
+        </svg>
+      `;
+    }
+
+    // ESTADO DA APLICAÇÃO
+    const memoriaTemporaria = {};
+    function storageGet(k){try{return window.localStorage.getItem(k)}catch(e){return memoriaTemporaria[k]||null}}
+    function storageSet(k,v){try{window.localStorage.setItem(k,v)}catch(e){memoriaTemporaria[k]=v}}
+    function parseSeguro(v,p){if(!v)return p;try{return JSON.parse(v)}catch(e){return p}}
+    const cs=parseSeguro(storageGet("rw_consultores"),null), as=parseSeguro(storageGet("rw_agendamentos"),null);
+    let consultores=Array.isArray(cs)&&cs.length?cs:DEFAULT_CONSULTORES.map(x=>({...x}));
+    let agendamentos=Array.isArray(as)?as.filter(x=>x&&x.id&&x.box&&x.horario):null;
+    let tempCustomImage = null;
+
+    function getInitialDemoData() {
+      return [
+        {
+          id: "ag1",
+          box: "Box 1",
+          horario: "08:00",
+          consultor: "Clayton Pereira",
+          prisma: "Prisma 04",
+          modelo: "Creta",
+          placa: "BRA2E19",
+          servico: "10. Lavagem simples",
+          prioridade: "Normal",
+          horaLiberado: "07:52",
+          horaInicio: "08:00",
+          horaFim: "08:28",
+          checklistOk: true,
+          liderRw: "Líder Empresa RW",
+          checklistItens: ["Pintura e lataria sem resíduos", "Vidros limpos e secos", "Aspiração interna e tapetes", "Pneus pretinhos e rodas limpas"],
+          obs: "Cliente retira às 09:00"
+        },
+        {
+          id: "ag2",
+          box: "Box 2",
+          horario: "08:00",
+          consultor: "Joao Cardozo",
+          prisma: "Prisma 11",
+          modelo: "HB20",
+          placa: "FGH4J88",
+          servico: "4. Higienização interna",
+          prioridade: "Alta",
+          horaLiberado: "07:55",
+          horaInicio: "08:02",
+          horaFim: "08:30",
+          checklistOk: false,
+          liderRw: "Líder Empresa RW",
+          checklistItens: [],
+          obs: "Atenção ao banco traseiro"
+        },
+        {
+          id: "ag3",
+          box: "Box 3",
+          horario: "08:00",
+          consultor: "RW | ESTÉTICA",
+          prisma: "Prisma RW-01",
+          modelo: "Tucson",
+          placa: "KLM9A01",
+          servico: "2. Vitrificação de pintura",
+          prioridade: "Alta",
+          horaLiberado: "07:58",
+          horaInicio: "08:05",
+          horaFim: "",
+          checklistOk: false,
+          liderRw: "Líder Empresa RW",
+          checklistItens: [],
+          obs: "Preparação estética completa"
+        },
+        {
+          id: "ag4",
+          box: "Box 1",
+          horario: "08:30",
+          consultor: "Renata Arcoverde",
+          prisma: "Prisma 07",
+          modelo: "HB20S",
+          placa: "QWE3R45",
+          servico: "8. Limpeza técnica do motor",
+          prioridade: "Normal",
+          horaLiberado: "08:20",
+          horaInicio: "",
+          horaFim: "",
+          checklistOk: false,
+          liderRw: "Líder Empresa RW",
+          checklistItens: [],
+          obs: "Revisão de 30.000 km concluída na oficina"
+        },
+        {
+          id: "ag5",
+          box: "Box 2",
+          horario: "08:30",
+          consultor: "VEÍCULO 0KM",
+          prisma: "Prisma 0KM-02",
+          modelo: "Ioniq 5",
+          placa: "NOV0A00",
+          servico: "3. Ceramic Coat",
+          prioridade: "Alta",
+          horaLiberado: "08:25",
+          horaInicio: "",
+          horaFim: "",
+          checklistOk: false,
+          liderRw: "Líder Empresa RW",
+          checklistItens: [],
+          obs: "Entrega técnica no showroom às 11:00"
+        },
+        {
+          id: "ag6",
+          box: "Box 3",
+          horario: "08:30",
+          consultor: "Andrio Silva",
+          prisma: "Prisma 19",
+          modelo: "Santa Fe",
+          placa: "XYZ7B55",
+          servico: "6. Hidratação de couro",
+          prioridade: "Normal",
+          horaLiberado: "",
+          horaInicio: "",
+          horaFim: "",
+          checklistOk: false,
+          liderRw: "Líder Empresa RW",
+          checklistItens: [],
+          obs: "Finalizando montagem na oficina"
+        }
+      ];
+    }
+
+    if (!agendamentos) {
+      agendamentos = getInitialDemoData();
+      saveState();
+    }
+
+    function saveState() {
+      storageSet("rw_consultores", JSON.stringify(consultores));
+      storageSet("rw_agendamentos", JSON.stringify(agendamentos));
+    }
+
+    function getConsultantObj(nome) {
+      return consultores.find(c => c.nome === nome) || { nome, cor: "#64748b", corNome: "Cinza" };
+    }
+
+    function getStatusInfo(ag) {
+      if (ag.checklistOk) {
+        return { label: "Checklist OK (Líder RW)", cls: "st-aprovado", key: "Checklist OK" };
+      }
+      if (ag.horaFim) {
+        return { label: "Lavagem Liberada (Aguard. OK)", cls: "st-concluido", key: "Lavagem Liberada" };
+      }
+      if (ag.horaInicio) {
+        return { label: "Em Lavagem no Box", cls: "st-lavando", key: "Em Lavagem" };
+      }
+      if (ag.horaLiberado) {
+        return { label: "Liberado p/ Lavagem", cls: "st-liberado", key: "Liberado Lavagem" };
+      }
+      return { label: "Programado (Oficina)", cls: "st-aguardando", key: "Programado" };
+    }
+
+    // INICIALIZAÇÃO DOS SELECTS
+    function initSelects() {
+      document.getElementById("scheduleDate").valueAsDate = new Date();
+
+      const selHorario = document.getElementById("fHorario");
+      selHorario.innerHTML = HORARIOS.map(h => `<option value="${h}">${h}</option>`).join("");
+
+      const selModelo = document.getElementById("fModelo");
+      selModelo.innerHTML = MODELOS.map(m => `<option value="${m}">${m}</option>`).join("");
+
+      const selServico = document.getElementById("fServico");
+      selServico.innerHTML = SERVICOS.map(s => `<option value="${s}">${s}</option>`).join("");
+
+      refreshConsultantUI();
+    }
+
+    function refreshConsultantUI() {
+      const selConsultor = document.getElementById("fConsultor");
+      const filterConsultor = document.getElementById("filterConsultant");
+      const currentFilter = filterConsultor.value;
+
+      selConsultor.innerHTML = consultores.map(c => `<option value="${c.nome}">${c.nome}</option>`).join("");
+      filterConsultor.innerHTML = `<option value="">Todos os Consultores / Prismas</option>` +
+        consultores.map(c => `<option value="${c.nome}">${c.nome}</option>`).join("");
+      filterConsultor.value = currentFilter;
+
+      // Barra de legenda dos prismas
+      const bar = document.getElementById("consultantLegendBar");
+      bar.innerHTML = `<span class="prisma-bar-title">🎨 Consultores / Cor do Prisma:</span>` +
+        consultores.map(c => {
+          const isActive = filterConsultor.value === c.nome ? "active" : "";
+          return `
+            <div class="consultant-pill ${isActive}" onclick="toggleConsultantFilter('${c.nome}')" title="Clique para filtrar por ${c.nome}">
+              <span class="prisma-dot" style="background:${c.cor}"></span>
+              <span>${c.nome}</span>
+            </div>
+          `;
+        }).join("");
+    }
+
+    function toggleConsultantFilter(nome) {
+      const sel = document.getElementById("filterConsultant");
+      sel.value = sel.value === nome ? "" : nome;
+      renderAll();
+    }
+
+    function getFilteredAgendamentos() {
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+      const fc = document.getElementById("filterConsultant").value;
+      const fb = document.getElementById("filterBox").value;
+      const fs = document.getElementById("filterStatus").value;
+
+      return agendamentos.filter(ag => {
+        if (fc && ag.consultor !== fc) return false;
+        if (fb && ag.box !== fb) return false;
+        if (fs && getStatusInfo(ag).key !== fs) return false;
+        if (q) {
+          const hay = `${ag.placa} ${ag.prisma} ${ag.modelo} ${ag.consultor} ${ag.servico}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderKPIs() {
+      document.getElementById("kpiTotal").textContent = agendamentos.length;
+      document.getElementById("kpiLiberados").textContent = agendamentos.filter(a => a.horaLiberado && !a.horaInicio).length;
+      document.getElementById("kpiLavando").textContent = agendamentos.filter(a => a.horaInicio && !a.horaFim).length;
+      document.getElementById("kpiConcluidos").textContent = agendamentos.filter(a => a.horaFim && !a.checklistOk).length;
+      document.getElementById("kpiAprovados").textContent = agendamentos.filter(a => a.checklistOk).length;
+    }
+
+    // RENDERIZA GRADE DE HORÁRIOS (08:00 - 17:30 x 3 BOXES)
+    function renderMatrix() {
+      const container = document.getElementById("matrixBody");
+      const filtered = getFilteredAgendamentos();
+      const hasActiveSearch = document.getElementById("searchInput").value ||
+                              document.getElementById("filterConsultant").value ||
+                              document.getElementById("filterBox").value ||
+                              document.getElementById("filterStatus").value;
+
+      container.innerHTML = HORARIOS.map(horario => {
+        const slotsHtml = BOXES.map(box => {
+          const ag = filtered.find(a => a.horario === horario && a.box === box);
+          if (!ag) {
+            // Verifica se está ocupado mas oculto pelo filtro
+            const hiddenAg = agendamentos.find(a => a.horario === horario && a.box === box);
+            if (hiddenAg && hasActiveSearch) {
+              return `<div class="slot-card empty" style="opacity:0.35" onclick="openModalNovo('${box}', '${horario}')"><span>Filtrado (${hiddenAg.placa})</span></div>`;
+            }
+            return `
+              <div class="slot-card empty" onclick="openModalNovo('${box}', '${horario}')">
+                <div style="font-size:18px;margin-bottom:2px;">+</div>
+                <div style="font-size:12px;font-weight:600;">Disponível (${box} • ${horario})</div>
+                <div style="font-size:11px;">Clique para programar veículo</div>
+              </div>
+            `;
+          }
+
+          const cObj = getConsultantObj(ag.consultor);
+          const st = getStatusInfo(ag);
+
+          let quickBtn = "";
+          if (!ag.horaLiberado) {
+            quickBtn = `<button class="btn btn-warning btn-sm" onclick="quickAction('${ag.id}', 'liberar')">🔓 Liberar p/ Lavagem</button>`;
+          } else if (!ag.horaInicio) {
+            quickBtn = `<button class="btn btn-primary btn-sm" onclick="quickAction('${ag.id}', 'iniciar')">▶️ Iniciar Lavagem</button>`;
+          } else if (!ag.horaFim) {
+            quickBtn = `<button class="btn btn-outline btn-sm" style="border-color:var(--purple);color:#d8b4fe;" onclick="quickAction('${ag.id}', 'finalizar')">⏹️ Concluir Lavagem</button>`;
+          } else if (!ag.checklistOk) {
+            quickBtn = `<button class="btn btn-success btn-sm" onclick="openChecklistModal('${ag.id}')">✅ Dar OK (Líder RW)</button>`;
+          } else {
+            quickBtn = `<button class="btn btn-outline btn-sm" onclick="openChecklistModal('${ag.id}')">✔️ Vistoriado RW</button>`;
+          }
+
+          return `
+            <div class="slot-card">
+              <div class="slot-prisma-stripe" style="background:${cObj.cor}"></div>
+              <div class="slot-top">
+                <span class="prisma-badge" style="background:${cObj.cor};color:#fff;">
+                  🏷️ ${ag.prisma} • ${ag.consultor}
+                </span>
+                <span class="priority-badge ${ag.prioridade === 'Alta' ? 'priority-alta' : 'priority-normal'}">
+                  ${ag.prioridade === 'Alta' ? '🔥 Prioridade' : 'Normal'}
+                </span>
+              </div>
+
+              <div class="slot-vehicle">
+                <div class="vehicle-thumb">
+                  ${getVehicleIllustration(ag.modelo, cObj.cor, ag.customImg)}
+                </div>
+                <div class="vehicle-info">
+                  <h4>${ag.modelo} <span class="plate-tag">${ag.placa}</span></h4>
+                  <div class="service-tag">🛠️ ${ag.servico}</div>
+                  ${ag.obs ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">💬 ${ag.obs}</div>` : ''}
+                </div>
+              </div>
+
+              <div class="slot-timestamps">
+                <div class="ts-item">
+                  <span class="ts-label">Liberado Ofic.</span>
+                  <span class="ts-val">${ag.horaLiberado || '--:--'}</span>
+                </div>
+                <div class="ts-item">
+                  <span class="ts-label">Início Lav.</span>
+                  <span class="ts-val">${ag.horaInicio || '--:--'}</span>
+                </div>
+                <div class="ts-item">
+                  <span class="ts-label">Lav. Liberada</span>
+                  <span class="ts-val">${ag.horaFim || '--:--'}</span>
+                </div>
+              </div>
+
+              <div class="slot-actions">
+                <span class="status-pill ${st.cls}">${st.label}</span>
+                <div style="display:flex;gap:5px;">
+                  ${quickBtn}
+                  <button class="btn btn-outline btn-sm" onclick="openModalEditar('${ag.id}')" title="Editar">✏️</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        return `
+          <div class="matrix-row" data-slot="${horario}">
+            <div class="time-cell">
+              ${horario}
+              <span>3 veículos</span>
+            </div>
+            ${slotsHtml}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function dataLocalISO(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+    function updateCurrentTimeline(){
+      document.querySelectorAll(".current-time-row").forEach(r=>{r.classList.remove("current-time-row");r.removeAttribute("data-now");r.style.removeProperty("--timeline-pos")});
+      const d=new Date(), campo=document.getElementById("scheduleDate"); if(campo&&campo.value&&campo.value!==dataLocalISO(d))return;
+      const now=d.getHours()*60+d.getMinutes()+d.getSeconds()/60;if(now<480||now>=1080)return;
+      const start=Math.floor((now-480)/30)*30+480, slot=`${String(Math.floor(start/60)).padStart(2,"0")}:${String(start%60).padStart(2,"0")}`;
+      const row=document.querySelector(`.matrix-row[data-slot="${slot}"]`);if(!row)return;
+      row.classList.add("current-time-row");row.dataset.now=d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",second:"2-digit"});row.style.setProperty("--timeline-pos",`${Math.max(3,Math.min(97,((now-start)/30)*100))}%`);
+    }
+
+    // RENDERIZA PLANILHA COMPLETA COM AS 9 COLUNAS EXATAS SOLICITADAS
+    function renderTable() {
+      const tbody = document.getElementById("tableBody");
+      const list = getFilteredAgendamentos().sort((a, b) => {
+        if (a.horario !== b.horario) return a.horario.localeCompare(b.horario);
+        return a.box.localeCompare(b.box);
+      });
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:28px;color:var(--text-muted);">Nenhum veículo encontrado com os filtros atuais.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(ag => {
+        const cObj = getConsultantObj(ag.consultor);
+        const st = getStatusInfo(ag);
+        return `
+          <tr>
+            <td>
+              <div style="font-weight:800;font-size:14px;">${ag.horario}</div>
+              <div style="font-size:11.5px;color:var(--primary);font-weight:600;">${ag.box}</div>
+            </td>
+            <td>
+              <span class="prisma-badge" style="background:${cObj.cor};color:#fff;">
+                ${ag.prisma}
+              </span>
+              <div style="font-size:12px;margin-top:4px;font-weight:600;">${ag.consultor}</div>
+            </td>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="vehicle-thumb" style="width:72px;height:42px;">
+                  ${getVehicleIllustration(ag.modelo, cObj.cor, ag.customImg)}
+                </div>
+                <span style="font-weight:700;">${ag.modelo}</span>
+              </div>
+            </td>
+            <td><span class="plate-tag">${ag.placa}</span></td>
+            <td>
+              <div style="font-weight:600;">${ag.servico}</div>
+              ${ag.prioridade === 'Alta' ? `<span class="priority-badge priority-alta" style="margin-top:3px;display:inline-block;">🔥 Prioridade Alta</span>` : ''}
+            </td>
+            <td>
+              ${ag.horaLiberado
+                ? `<span style="font-weight:700;color:#fcd34d;">${ag.horaLiberado}</span>`
+                : `<button class="btn btn-warning btn-sm" onclick="quickAction('${ag.id}', 'liberar')">Liberar Agora</button>`}
+            </td>
+            <td>
+              ${ag.horaInicio
+                ? `<span style="font-weight:700;color:#38bdf8;">${ag.horaInicio}</span>`
+                : `<button class="btn btn-primary btn-sm" onclick="quickAction('${ag.id}', 'iniciar')">Iniciar Agora</button>`}
+            </td>
+            <td>
+              ${ag.horaFim
+                ? `<span style="font-weight:700;color:#c4b5fd;">${ag.horaFim}</span>`
+                : `<button class="btn btn-outline btn-sm" onclick="quickAction('${ag.id}', 'finalizar')">Finalizar Agora</button>`}
+            </td>
+            <td>
+              ${ag.checklistOk
+                ? `<div><span class="status-pill st-aprovado">✅ OK Aprovado</span><div style="font-size:11px;color:var(--text-muted);margin-top:3px;">Resp: ${ag.liderRw || 'Líder Empresa RW'}</div></div>`
+                : `<button class="btn btn-success btn-sm" onclick="openChecklistModal('${ag.id}')">📋 Check List Líder RW</button>`}
+            </td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="openModalEditar('${ag.id}')">✏️ Editar</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // RENDERIZA PAINEL OPERACIONAL POR BOX (PARA EQUIPE DE LAVAGEM E LÍDER RW)
+    function renderLiveBoxes() {
+      const container = document.getElementById("liveBoxesContainer");
+      const filtered = getFilteredAgendamentos();
+
+      container.innerHTML = BOXES.map(box => {
+        const boxItems = filtered
+          .filter(a => a.box === box)
+          .sort((a, b) => a.horario.localeCompare(b.horario));
+
+        const cardsHtml = boxItems.length === 0
+          ? `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:13px;">Nenhum veículo programado neste box.</div>`
+          : boxItems.map(ag => {
+              const cObj = getConsultantObj(ag.consultor);
+              const st = getStatusInfo(ag);
+              return `
+                <div class="slot-card">
+                  <div class="slot-prisma-stripe" style="background:${cObj.cor}"></div>
+                  <div class="slot-top">
+                    <span style="font-size:15px;font-weight:800;color:var(--primary);">⏰ ${ag.horario}</span>
+                    <span class="prisma-badge" style="background:${cObj.cor};color:#fff;">
+                      ${ag.prisma} • ${ag.consultor}
+                    </span>
+                  </div>
+                  <div class="slot-vehicle">
+                    <div class="vehicle-thumb">
+                      ${getVehicleIllustration(ag.modelo, cObj.cor, ag.customImg)}
+                    </div>
+                    <div class="vehicle-info">
+                      <h4>${ag.modelo} <span class="plate-tag">${ag.placa}</span></h4>
+                      <div class="service-tag">${ag.servico}</div>
+                    </div>
+                  </div>
+                  <div class="slot-timestamps">
+                    <div class="ts-item"><span class="ts-label">Liberado</span><span class="ts-val">${ag.horaLiberado || '--:--'}</span></div>
+                    <div class="ts-item"><span class="ts-label">Início</span><span class="ts-val">${ag.horaInicio || '--:--'}</span></div>
+                    <div class="ts-item"><span class="ts-label">Finalizado</span><span class="ts-val">${ag.horaFim || '--:--'}</span></div>
+                  </div>
+                  <div class="slot-actions">
+                    <span class="status-pill ${st.cls}">${st.label}</span>
+                    <div style="display:flex;gap:5px;">
+                      ${!ag.horaInicio ? `<button class="btn btn-primary btn-sm" onclick="quickAction('${ag.id}', 'iniciar')">▶️ Iniciar</button>` : ''}
+                      ${ag.horaInicio && !ag.horaFim ? `<button class="btn btn-warning btn-sm" onclick="quickAction('${ag.id}', 'finalizar')">⏹️ Concluir</button>` : ''}
+                      ${!ag.checklistOk ? `<button class="btn btn-success btn-sm" onclick="openChecklistModal('${ag.id}')">✅ Check RW</button>` : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join("");
+
+        return `
+          <div class="box-column">
+            <div class="box-col-header">
+              <h3>🚿 ${box}</h3>
+              <span class="status-pill st-lavando">${boxItems.length} veículos</span>
+            </div>
+            ${cardsHtml}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderAll() {
+      refreshConsultantUI();
+      renderKPIs();
+      renderMatrix();
+      renderTable();
+      renderLiveBoxes();
+      updateCurrentTimeline();
+    }
+
+    // AÇÕES RÁPIDAS DE 1 CLIQUE (LIBERAR / INICIAR / FINALIZAR)
+    function getNowHHMM() {
+      const now = new Date();
+      return String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+    }
+
+    function quickAction(id, action) {
+      const ag = agendamentos.find(a => a.id === id);
+      if (!ag) return;
+      const now = getNowHHMM();
+
+      if (action === "liberar") {
+        ag.horaLiberado = now;
+      } else if (action === "iniciar") {
+        if (!ag.horaLiberado) ag.horaLiberado = now;
+        ag.horaInicio = now;
+      } else if (action === "finalizar") {
+        if (!ag.horaLiberado) ag.horaLiberado = now;
+        if (!ag.horaInicio) ag.horaInicio = now;
+        ag.horaFim = now;
+      }
+      saveState();
+      renderAll();
+    }
+
+    // MODAL DE PROGRAMAÇÃO / EDIÇÃO
+    function openModalNovo(box = "Box 1", horario = "08:00") {
+      document.getElementById("modalTitle").textContent = "Programar Veículo para Lavagem (Oficina)";
+      document.getElementById("editId").value = "";
+      document.getElementById("fBox").value = box;
+      document.getElementById("fHorario").value = horario;
+      document.getElementById("fConsultor").value = consultores[0].nome;
+      document.getElementById("fPrismaNum").value = "";
+      document.getElementById("fModelo").value = "HB20";
+      document.getElementById("fPlaca").value = "";
+      document.getElementById("fServico").value = SERVICOS[9]; // 10. Lavagem simples
+      document.getElementById("fPrioridade").value = "Normal";
+      document.getElementById("fHoraLiberado").value = getNowHHMM();
+      document.getElementById("fHoraInicio").value = "";
+      document.getElementById("fHoraFim").value = "";
+      document.getElementById("fObs").value = "";
+      tempCustomImage = null;
+      document.getElementById("btnDeleteBooking").style.display = "none";
+
+      updateModalPreview();
+      document.getElementById("bookingModal").classList.add("open");
+    }
+
+    function openModalEditar(id) {
+      const ag = agendamentos.find(a => a.id === id);
+      if (!ag) return;
+      document.getElementById("modalTitle").textContent = `Editar Veículo — ${ag.placa} (${ag.box} às ${ag.horario})`;
+      document.getElementById("editId").value = ag.id;
+      document.getElementById("fBox").value = ag.box;
+      document.getElementById("fHorario").value = ag.horario;
+      document.getElementById("fConsultor").value = ag.consultor;
+      document.getElementById("fPrismaNum").value = ag.prisma;
+      document.getElementById("fModelo").value = ag.modelo;
+      document.getElementById("fPlaca").value = ag.placa;
+      document.getElementById("fServico").value = ag.servico;
+      document.getElementById("fPrioridade").value = ag.prioridade || "Normal";
+      document.getElementById("fHoraLiberado").value = ag.horaLiberado || "";
+      document.getElementById("fHoraInicio").value = ag.horaInicio || "";
+      document.getElementById("fHoraFim").value = ag.horaFim || "";
+      document.getElementById("fObs").value = ag.obs || "";
+      tempCustomImage = ag.customImg || null;
+      document.getElementById("btnDeleteBooking").style.display = "inline-flex";
+
+      updateModalPreview();
+      document.getElementById("bookingModal").classList.add("open");
+    }
+
+    function closeBookingModal() {
+      document.getElementById("bookingModal").classList.remove("open");
+    }
+
+    function setNow(inputId) {
+      document.getElementById(inputId).value = getNowHHMM();
+    }
+
+    function handleCustomImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        tempCustomImage = e.target.result;
+        updateModalPreview();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateModalPreview() {
+      const consultor = document.getElementById("fConsultor").value;
+      const prismaNum = document.getElementById("fPrismaNum").value || "PRISMA";
+      const modelo = document.getElementById("fModelo").value;
+      const cObj = getConsultantObj(consultor);
+
+      const badge = document.getElementById("modalPrismaBadge");
+      badge.style.background = cObj.cor;
+      badge.style.color = "#fff";
+      badge.textContent = `🏷️ ${prismaNum} • ${consultor}`;
+
+      document.getElementById("modalModelTitle").textContent = `Hyundai ${modelo}`;
+      document.getElementById("modalVehicleSvg").innerHTML = getVehicleIllustration(modelo, cObj.cor, tempCustomImage);
+    }
+
+    function saveBooking() {
+      const editId = document.getElementById("editId").value;
+      const box = document.getElementById("fBox").value;
+      const horario = document.getElementById("fHorario").value;
+      const consultor = document.getElementById("fConsultor").value;
+      const prisma = document.getElementById("fPrismaNum").value.trim() || "Prisma S/N";
+      const modelo = document.getElementById("fModelo").value;
+      const placa = document.getElementById("fPlaca").value.trim().toUpperCase() || "SEM-PLACA";
+      const servico = document.getElementById("fServico").value;
+      const prioridade = document.getElementById("fPrioridade").value;
+      const horaLiberado = document.getElementById("fHoraLiberado").value;
+      const horaInicio = document.getElementById("fHoraInicio").value;
+      const horaFim = document.getElementById("fHoraFim").value;
+      const obs = document.getElementById("fObs").value.trim();
+
+      // Verifica conflito de mesmo Box e Horário
+      const conflict = agendamentos.find(a => a.box === box && a.horario === horario && a.id !== editId);
+      if (conflict) {
+        if (!confirm(`O ${box} às ${horario} já possui o veículo ${conflict.modelo} (${conflict.placa}). Deseja substituir este horário?`)) {
+          return;
+        }
+        agendamentos = agendamentos.filter(a => a.id !== conflict.id);
+      }
+
+      if (editId) {
+        const idx = agendamentos.findIndex(a => a.id === editId);
+        if (idx > -1) {
+          agendamentos[idx] = {
+            ...agendamentos[idx],
+            box, horario, consultor, prisma, modelo, placa, servico, prioridade,
+            horaLiberado, horaInicio, horaFim, obs,
+            customImg: tempCustomImage
+          };
+        }
+      } else {
+        agendamentos.push({
+          id: "ag_" + Date.now(),
+          box, horario, consultor, prisma, modelo, placa, servico, prioridade,
+          horaLiberado, horaInicio, horaFim, obs,
+          checklistOk: false,
+          liderRw: "Líder Empresa RW",
+          checklistItens: [],
+          customImg: tempCustomImage
+        });
+      }
+
+      saveState();
+      closeBookingModal();
+      renderAll();
+    }
+
+    function deleteCurrentBooking() {
+      const editId = document.getElementById("editId").value;
+      if (!editId) return;
+      agendamentos = agendamentos.filter(a => a.id !== editId);
+      saveState();
+      closeBookingModal();
+      renderAll();
+    }
+
+    // MODAL DE CHECKLIST DO LÍDER EMPRESA RW
+    function openChecklistModal(id) {
+      const ag = agendamentos.find(a => a.id === id);
+      if (!ag) return;
+      document.getElementById("chkBookingId").value = ag.id;
+      document.getElementById("chkLiderNome").value = ag.liderRw || "Líder Empresa RW";
+      document.getElementById("chkHoraFinal").value = ag.horaFim || getNowHHMM();
+      document.getElementById("chkObs").value = ag.obs || "";
+
+      const cObj = getConsultantObj(ag.consultor);
+      document.getElementById("chkVehicleSummary").innerHTML = `
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="vehicle-thumb" style="width:96px;height:56px;">
+            ${getVehicleIllustration(ag.modelo, cObj.cor, ag.customImg)}
+          </div>
+          <div>
+            <span class="prisma-badge" style="background:${cObj.cor};color:#fff;margin-bottom:4px;">
+              ${ag.prisma} • ${ag.consultor}
+            </span>
+            <div style="font-weight:800;font-size:15px;">${ag.modelo} — <span class="plate-tag">${ag.placa}</span></div>
+            <div style="font-size:12.5px;color:#38bdf8;margin-top:2px;">Serviço: ${ag.servico} (${ag.box} às ${ag.horario})</div>
+          </div>
+        </div>
+      `;
+
+      const defaultChecks = [
+        `Execução completa de: ${ag.servico}`,
+        "Pintura externa e caixas de roda sem resíduos ou manchas",
+        "Vidros internos e externos limpos e sem marcas de secagem",
+        "Acabamento interno, painel, tapetes e pneus inspecionados",
+        "Prisma conferido no veículo pronto para entrega ao consultor"
+      ];
+
+      const listEl = document.getElementById("chkItemsList");
+      listEl.innerHTML = defaultChecks.map((item, idx) => `
+        <label class="check-row">
+          <input type="checkbox" class="rw-check-item" value="${item}" checked />
+          <span>${item}</span>
+        </label>
+      `).join("");
+
+      document.getElementById("checklistModal").classList.add("open");
+    }
+
+    function closeChecklistModal() {
+      document.getElementById("checklistModal").classList.remove("open");
+    }
+
+    function confirmChecklistRW() {
+      const id = document.getElementById("chkBookingId").value;
+      const ag = agendamentos.find(a => a.id === id);
+      if (!ag) return;
+
+      const checks = Array.from(document.querySelectorAll(".rw-check-item:checked")).map(el => el.value);
+      if (checks.length === 0) {
+        alert("Marque os itens conferidos pelo Líder da Empresa RW para liberar o veículo.");
+        return;
+      }
+
+      const now = getNowHHMM();
+      if (!ag.horaLiberado) ag.horaLiberado = now;
+      if (!ag.horaInicio) ag.horaInicio = now;
+      ag.horaFim = document.getElementById("chkHoraFinal").value || now;
+      ag.liderRw = document.getElementById("chkLiderNome").value.trim() || "Líder Empresa RW";
+      ag.obs = document.getElementById("chkObs").value.trim();
+      ag.checklistItens = checks;
+      ag.checklistOk = true;
+
+      saveState();
+      closeChecklistModal();
+      renderAll();
+    }
+
+    // MODAL DE CORES DOS PRISMAS / CONSULTORES
+    function openPrismaModal() {
+      const container = document.getElementById("prismaColorList");
+      container.innerHTML = consultores.map((c, idx) => `
+        <div style="background:var(--surface-2);padding:10px 12px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="color" value="${c.cor}" onchange="updateConsultantColor(${idx}, this.value)" style="width:32px;height:32px;border:none;background:transparent;cursor:pointer;" />
+            <div>
+              <div style="font-weight:700;font-size:13px;">${c.nome}</div>
+              <div style="font-size:11px;color:var(--text-muted);">Cor do Prisma</div>
+            </div>
+          </div>
+          <span class="prisma-badge" style="background:${c.cor};color:#fff;">Prisma</span>
+        </div>
+      `).join("");
+      document.getElementById("prismaModal").classList.add("open");
+    }
+
+    function updateConsultantColor(idx, newColor) {
+      consultores[idx].cor = newColor;
+      saveState();
+      openPrismaModal();
+      renderAll();
+    }
+
+    function closePrismaModal() {
+      document.getElementById("prismaModal").classList.remove("open");
+    }
+
+    // NAVEGAÇÃO ENTRE ABAS
+    function switchTab(viewName, btnEl) {
+      document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+      document.getElementById("view-" + viewName).classList.add("active");
+      btnEl.classList.add("active");
+    }
+
+    function clearFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterConsultant").value = "";
+      document.getElementById("filterBox").value = "";
+      document.getElementById("filterStatus").value = "";
+      renderAll();
+    }
+
+    function resetDemoData() {
+      if (confirm("Deseja restaurar os veículos de exemplo na programação?")) {
+        agendamentos = getInitialDemoData();
+        saveState();
+        renderAll();
+      }
+    }
+
+    // EXPORTAÇÃO PARA PLANILHA CSV (COM AS 9 COLUNAS EXATAS)
+    function exportCSV() {
+      const headers = [
+        "Horario",
+        "Box",
+        "Prisma",
+        "Consultor",
+        "Modelo",
+        "Placa",
+        "Tipo de Servico",
+        "Horario Liberado Lavagem",
+        "Horario Inicio Lavagem",
+        "Horario Lavagem Liberada",
+        "Check List de OK da Lavagem",
+        "Responsavel OK"
+      ];
+      const rows = agendamentos.map(a => [
+        a.horario,
+        a.box,
+        a.prisma,
+        a.consultor,
+        a.modelo,
+        a.placa,
+        a.servico,
+        a.horaLiberado || "",
+        a.horaInicio || "",
+        a.horaFim || "",
+        a.checklistOk ? "OK APROVADO" : "PENDENTE",
+        a.checklistOk ? (a.liderRw || "Líder Empresa RW") : ""
+      ]);
+
+      const csvContent = "\uFEFF" + [headers, ...rows]
+        .map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(";"))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `controle_lavagem_rw_${document.getElementById("scheduleDate").value || "hoje"}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+
+    // CONTROLE LOCAL DE USUÁRIOS E PERMISSÕES
+    const ACCESS_KEY = "gb_access_users_v1";
+    const ACCESS_SESSION_KEY = "gb_access_session_v1";
+    const ACCESS_VIEWS = ["matrix", "table", "live"];
+    const ACCESS_LABELS = {matrix:"Grade", table:"Planilha", live:"Painel RW"};
+    const DEFAULT_ACCESS_USERS = [{user:"admin",pin:"1234",admin:true,permissions:{matrix:{view:true,edit:true},table:{view:true,edit:true},live:{view:true,edit:true}}}];
+    let accessUsers = parseSeguro(storageGet(ACCESS_KEY), DEFAULT_ACCESS_USERS);
+    if(!Array.isArray(accessUsers) || !accessUsers.length) accessUsers = JSON.parse(JSON.stringify(DEFAULT_ACCESS_USERS));
+    let currentAccessUser = storageGet(ACCESS_SESSION_KEY) || "";
+
+    function currentAccess(){ return accessUsers.find(u=>u.user===currentAccessUser) || null; }
+    function activeAccessView(){ const el=document.querySelector('.nav-tab.active'); return el?.dataset.view || 'matrix'; }
+    function canView(view){ const u=currentAccess(); return !!(u && (u.admin || u.permissions?.[view]?.view)); }
+    function canEdit(view=activeAccessView()){ const u=currentAccess(); return !!(u && (u.admin || u.permissions?.[view]?.edit)); }
+    function accessDenied(text="Você não possui permissão para editar esta tela."){ alert("🔒 "+text); return false; }
+
+    function openAccessModal(){
+      document.getElementById('accessModal').classList.add('open');
+      const u=currentAccess(), isAdmin=!!u?.admin;
+      document.getElementById('adminPanel').style.display=isAdmin?'block':'none';
+      document.getElementById('saveAccessBtn').style.display=isAdmin?'inline-flex':'none';
+      if(isAdmin) renderAccessUsers();
+    }
+    function closeAccessModal(){ document.getElementById('accessModal').classList.remove('open'); }
+    function loginAccess(){
+      const name=document.getElementById('loginUser').value.trim().toLowerCase();
+      const pin=document.getElementById('loginPin').value;
+      const u=accessUsers.find(x=>x.user.toLowerCase()===name && x.pin===pin);
+      if(!u) return accessDenied('Usuário ou PIN inválido.');
+      currentAccessUser=u.user; storageSet(ACCESS_SESSION_KEY,currentAccessUser); closeAccessModal(); applyAccessPermissions();
+    }
+    function logoutAccess(){ currentAccessUser=''; storageSet(ACCESS_SESSION_KEY,''); closeAccessModal(); applyAccessPermissions(); setTimeout(openAccessModal,50); }
+    function renderAccessUsers(){
+      const grid=document.getElementById('accessUsersGrid');
+      let h='<div class="access-head">Usuário</div>';
+      ACCESS_VIEWS.forEach(v=>h+=`<div class="access-head">${ACCESS_LABELS[v]}<br>Ver</div><div class="access-head">${ACCESS_LABELS[v]}<br>Editar</div>`);
+      h+='<div class="access-head">Excluir</div>';
+      accessUsers.forEach((u,i)=>{
+        h+=`<div><strong>${u.user}</strong>${u.admin?' 👑':''}<br><button class="btn btn-outline btn-sm" onclick="changeAccessPin(${i})">Alterar PIN</button></div>`;
+        ACCESS_VIEWS.forEach(v=>{ const p=u.permissions?.[v]||{}; h+=`<div><input class="access-check" type="checkbox" data-i="${i}" data-v="${v}" data-p="view" ${u.admin||p.view?'checked':''} ${u.admin?'disabled':''}></div><div><input class="access-check" type="checkbox" data-i="${i}" data-v="${v}" data-p="edit" ${u.admin||p.edit?'checked':''} ${u.admin?'disabled':''}></div>`; });
+        h+=`<div>${u.admin?'':`<button class="btn btn-danger btn-sm" onclick="deleteAccessUser(${i})">🗑️</button>`}</div>`;
+      }); grid.innerHTML=h;
+    }
+    function addAccessUser(){
+      const user=document.getElementById('newAccessUser').value.trim(), pin=document.getElementById('newAccessPin').value.trim();
+      if(!/^[A-Za-z0-9._-]{3,30}$/.test(user)) return accessDenied('Use um nome de usuário com 3 a 30 caracteres.');
+      if(pin.length<4) return accessDenied('O PIN precisa ter pelo menos 4 caracteres.');
+      if(accessUsers.some(u=>u.user.toLowerCase()===user.toLowerCase())) return accessDenied('Este usuário já existe.');
+      accessUsers.push({user,pin,admin:false,permissions:{matrix:{view:true,edit:false},table:{view:true,edit:false},live:{view:true,edit:false}}});
+      document.getElementById('newAccessUser').value='';document.getElementById('newAccessPin').value='';renderAccessUsers();
+    }
+    function deleteAccessUser(i){ if(confirm('Excluir este usuário?')){accessUsers.splice(i,1);renderAccessUsers();} }
+    function changeAccessPin(i){ const pin=prompt(`Novo PIN para ${accessUsers[i].user}:`); if(pin===null)return; if(pin.length<4)return accessDenied('O PIN precisa ter pelo menos 4 caracteres.'); accessUsers[i].pin=pin; alert('PIN atualizado. Clique em Salvar permissões.'); }
+    function saveAccessUsers(){
+      document.querySelectorAll('.access-check:not(:disabled)').forEach(c=>{const u=accessUsers[+c.dataset.i];u.permissions=u.permissions||{};u.permissions[c.dataset.v]=u.permissions[c.dataset.v]||{};u.permissions[c.dataset.v][c.dataset.p]=c.checked;if(c.dataset.p==='edit'&&c.checked)u.permissions[c.dataset.v].view=true;});
+      storageSet(ACCESS_KEY,JSON.stringify(accessUsers));applyAccessPermissions();alert('✅ Permissões salvas.');
+    }
+    function applyAccessPermissions(){
+      const u=currentAccess(); document.getElementById('currentUserBadge').textContent=u?`🔓 ${u.user}${u.admin?' (Administrador)':''}`:'🔒 Não autenticado';
+      document.querySelectorAll('.nav-tab[data-view]').forEach(btn=>{btn.style.display=canView(btn.dataset.view)?'inline-flex':'none'});
+      document.querySelectorAll('[data-mobile-view]').forEach(btn=>{btn.style.display=canView(btn.dataset.mobileView)?'flex':'none'});
+      updateMobileFab();
+      const current=activeAccessView();
+      if(!canView(current)){ const first=ACCESS_VIEWS.find(canView); if(first){const btn=document.querySelector(`.nav-tab[data-view="${first}"]`); originalSwitchTab(first,btn);} else {document.querySelectorAll('.view-section').forEach(x=>x.style.display='none');} }
+      const edit=canEdit(activeAccessView());
+      document.querySelectorAll('.slot-actions,#saveBookingBtn,#deleteBookingBtn').forEach(x=>x.classList.toggle('permission-lock',!edit));
+      const agendar=document.querySelector('button[onclick="openModalNovo()"]'); if(agendar) agendar.style.display=canEdit('matrix')?'inline-flex':'none';
+    }
+
+    const originalSwitchTab=switchTab;
+    switchTab=function(view,btn){ if(!canView(view))return accessDenied('Você não possui permissão para visualizar esta tela.'); originalSwitchTab(view,btn); applyAccessPermissions(); };
+    const originalOpenModalNovo=openModalNovo; openModalNovo=function(...a){if(!canEdit('matrix'))return accessDenied();return originalOpenModalNovo(...a)};
+    const originalOpenModalEditar=openModalEditar; openModalEditar=function(...a){if(!canEdit(activeAccessView()))return accessDenied();return originalOpenModalEditar(...a)};
+    const originalQuickAction=quickAction; quickAction=function(...a){if(!canEdit(activeAccessView()))return accessDenied();return originalQuickAction(...a)};
+    const originalOpenChecklistModal=openChecklistModal; openChecklistModal=function(...a){if(!canEdit('live'))return accessDenied();return originalOpenChecklistModal(...a)};
+    const originalSaveBooking=saveBooking; saveBooking=function(...a){if(!canEdit('matrix'))return accessDenied();return originalSaveBooking(...a)};
+    const originalDeleteCurrentBooking=deleteCurrentBooking; deleteCurrentBooking=function(...a){if(!canEdit('matrix'))return accessDenied();return originalDeleteCurrentBooking(...a)};
+    const originalConfirmChecklistRW=confirmChecklistRW; confirmChecklistRW=function(...a){if(!canEdit('live'))return accessDenied();return originalConfirmChecklistRW(...a)};
+    const originalOpenPrismaModal=openPrismaModal; openPrismaModal=function(...a){if(!canEdit('matrix'))return accessDenied();return originalOpenPrismaModal(...a)};
+    const originalResetDemoData=resetDemoData; resetDemoData=function(...a){if(!currentAccess()?.admin)return accessDenied('Somente o administrador pode restaurar os dados.');return originalResetDemoData(...a)};
+
+
+    function mobileSwitch(view, button){
+      const desktopButton=document.querySelector(`.nav-tab[data-view="${view}"]`);
+      if(!canView(view)) return accessDenied("Você não possui permissão para visualizar esta tela.");
+      switchTab(view,desktopButton);
+      document.querySelectorAll("[data-mobile-view]").forEach(b=>b.classList.toggle("active",b.dataset.mobileView===view));
+      window.scrollTo({top:0,behavior:"smooth"});
+      updateMobileFab();
+    }
+    function updateMobileFab(){
+      const fab=document.getElementById("mobileFab"); if(!fab)return;
+      fab.style.display=(window.innerWidth<=700 && canEdit("matrix"))?"flex":"none";
+    }
+    window.addEventListener("resize",updateMobileFab);
+
+    initSelects();
+    renderAll();
+    updateMobileFab();
+    applyAccessPermissions();
+    if(!currentAccess()) setTimeout(openAccessModal,120);
+    window.setInterval(()=>{try{updateCurrentTimeline()}catch(e){console.error(e)}},1000);
+  </script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
+    }
+  </script>
+</body>
+</html>

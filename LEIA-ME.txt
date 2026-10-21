@@ -1,0 +1,13 @@
+PACOTE DE PUBLICACAO - APP CONTROLE DE LAVAGEM GRAND BRASIL
+
+1. Envie todos os arquivos deste pacote para uma hospedagem de site estatico.
+2. O arquivo de entrada e index.html.
+3. Apos publicar, abra o link no celular.
+4. No Chrome/Edge, use "Adicionar a tela inicial" ou "Instalar aplicativo".
+
+Primeiro acesso local:
+Usuario: admin
+PIN: 1234
+
+ATENCAO: dados, usuarios e permissoes continuam armazenados no navegador de cada aparelho.
+Para sincronizacao entre aparelhos, e necessario banco de dados e autenticacao em servidor.
